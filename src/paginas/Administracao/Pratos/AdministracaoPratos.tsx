@@ -12,22 +12,23 @@ import { useEffect, useState } from "react";
 import IRestaurante from "../../../interfaces/IRestaurante";
 import http from "../../../http";
 import { Link as RouterLink } from 'react-router-dom';
+import IPrato from "../../../interfaces/IPrato";
 
-const AdministracaoRestaurantes = () => {
-  const [restaurantes, setRestaurantes] = useState<IRestaurante[]>([]);
+const AdministracaoPratos = () => {
+  const [pratos, setPratos] = useState<IPrato[]>([]);
 
   useEffect(() => {
     http
-      .get<IRestaurante[]>("restaurantes/")
-      .then((resposta) => setRestaurantes(resposta.data));
+      .get<IPrato[]>("pratos/")
+      .then((resposta) => setPratos(resposta.data));
   }, []);
 
-  const excluir = (restauranteExcluido: IRestaurante) => {
-    http.delete(`restaurantes/${restauranteExcluido.id}/`).then(() => {
-      const listaRestaurantes = restaurantes.filter(
-        (restaurante) => restaurante.id !== restauranteExcluido.id
+  const excluir = (pratoExcluido: IPrato) => {
+    http.delete(`prato/${pratoExcluido.id}/`).then(() => {
+      const listaPratos = pratos.filter(
+        (prato) => prato.id !== pratoExcluido.id
       );
-      setRestaurantes([...listaRestaurantes]);
+      setPratos([...listaPratos]);
     });
   };
 
@@ -37,20 +38,27 @@ const AdministracaoRestaurantes = () => {
           <TableHead>
             <TableRow>
               <TableCell>Nome</TableCell>
+              <TableCell>Descrição</TableCell>
+              <TableCell>Tag</TableCell>
+              <TableCell>Imagem</TableCell>
               <TableCell>Editar</TableCell>
-
               <TableCell>Excluir</TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {restaurantes.map((restaurante) => (
-              <TableRow key={restaurante.id}>
-                <TableCell>{restaurante.nome}</TableCell>
+            {pratos.map((prato) => (
+              <TableRow key={prato.id}>
+                <TableCell>{prato.nome}</TableCell>
+                <TableCell>{prato.descricao}</TableCell>
+                <TableCell>{prato.tag}</TableCell>
                 <TableCell>
-                  [{" "}
-                  <RouterLink to={`/admin/restaurantes/${restaurante.id}`}>
+                 [<a href={prato.imagem} target="_blank" rel="noreferrer">Ver imagem</a>]</TableCell>
+                <TableCell>
+                  [
+                  <RouterLink to={`/admin/pratos/${prato.id}`}>
                     editar
-                  </RouterLink> {" "}
+                  </RouterLink>
                   ]
                 </TableCell>
 
@@ -58,7 +66,7 @@ const AdministracaoRestaurantes = () => {
                   <Button
                     variant="outlined"
                     color="error"
-                    onClick={() => excluir(restaurante)}
+                    onClick={() => excluir(prato)}
                   >
                     Excluir
                   </Button>
@@ -71,4 +79,4 @@ const AdministracaoRestaurantes = () => {
   );
 };
 
-export default AdministracaoRestaurantes;
+export default AdministracaoPratos;
